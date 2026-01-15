@@ -44,17 +44,35 @@ npm start
 
 ### Health Check
 
+**Linux/Mac (bash):**
 ```bash
 curl http://localhost:8080/healthz
 curl http://localhost:8080/actuator/health
 ```
 
+**Windows (PowerShell):**
+```powershell
+Invoke-RestMethod http://localhost:8080/healthz
+Invoke-RestMethod http://localhost:8080/actuator/health
+```
+
 ### Optimize Load
 
+**Linux/Mac (bash):**
 ```bash
 curl -X POST http://localhost:8080/api/v1/load-optimizer/optimize \
   -H "Content-Type: application/json" \
   -d @sample-request.json
+```
+
+**Windows (PowerShell):**
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/load-optimizer/optimize" -Method Post -ContentType "application/json" -Body (Get-Content sample-request.json -Raw)
+```
+
+**Windows (curl.exe):**
+```powershell
+curl.exe -X POST http://localhost:8080/api/v1/load-optimizer/optimize -H "Content-Type: application/json" -d "@sample-request.json"
 ```
 
 ## Request Format
@@ -130,10 +148,55 @@ src/
 
 Use the provided `sample-request.json` for testing:
 
+**Linux/Mac (bash):**
 ```bash
 curl -X POST http://localhost:8080/api/v1/load-optimizer/optimize \
   -H "Content-Type: application/json" \
   -d @sample-request.json
+```
+
+**Windows (PowerShell):**
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/load-optimizer/optimize" -Method Post -ContentType "application/json" -Body (Get-Content sample-request.json -Raw)
+```
+
+**PowerShell inline test (no file needed):**
+```powershell
+$body = @'
+{
+  "truck": {
+    "id": "truck-123",
+    "max_weight_lbs": 44000,
+    "max_volume_cuft": 3000
+  },
+  "orders": [
+    {
+      "id": "ord-001",
+      "payout_cents": 250000,
+      "weight_lbs": 18000,
+      "volume_cuft": 1200,
+      "origin": "Los Angeles, CA",
+      "destination": "Dallas, TX",
+      "pickup_date": "2025-12-05",
+      "delivery_date": "2025-12-09",
+      "is_hazmat": false
+    },
+    {
+      "id": "ord-002",
+      "payout_cents": 180000,
+      "weight_lbs": 12000,
+      "volume_cuft": 900,
+      "origin": "Los Angeles, CA",
+      "destination": "Dallas, TX",
+      "pickup_date": "2025-12-04",
+      "delivery_date": "2025-12-10",
+      "is_hazmat": false
+    }
+  ]
+}
+'@
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/load-optimizer/optimize" -Method Post -ContentType "application/json" -Body $body
 ```
 
 Expected result: Orders ord-001 and ord-002 selected (ord-003 excluded due to hazmat)
