@@ -26,7 +26,7 @@ The optimizer uses two strategies based on problem size:
 ### Using Docker (Recommended)
 
 ```bash
-git clone <your-repo>
+git clone https://github.com/aditya09092002choudhary/teleport
 cd smartload-optimization-api
 docker compose up --build
 ```
